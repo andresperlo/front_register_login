@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
 
 function App() {
+  const [user, setUser] = useState('')
+  const [pass, setPass] = useState('')
+  const token = JSON.parse(localStorage.getItem('token'))
+  const handleSubmitBack = () => {
+    fetch('http://localhost:3001/login', {
+      method: 'POST',
+      headers: {
+        "Content-type": "application/json",
+        token
+      },
+      body: JSON.stringify({
+        username: user,
+        password: pass
+      })
+    })
+      .then((res) => res.json())
+      .then((res) => localStorage.setItem('token', JSON.stringify(res.token)))
+  }
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <input type={'text'} onChange={(e) => setUser(e.target.value)} />
+      <input type={'text'} onChange={(e) => setPass(e.target.value)} />
+      <button onClick={() => handleSubmitBack()}>Login</button>
     </div>
   );
 }
